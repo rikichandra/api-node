@@ -41,7 +41,7 @@ try {
 }
 ```
 
-`fetchGoogleMapsPage(query, offset)` juga diekspor langsung sesuai kontrak runner GMST. Versi langsung membuka dan menutup browser per pemanggilan. Factory di atas mempertahankan browser selama satu pekerjaan dan lebih efisien.
+`fetchGoogleMapsPage(query, offset)` juga diekspor langsung sesuai kontrak runner. Versi langsung membuka dan menutup browser per pemanggilan. Factory di atas mempertahankan browser selama satu pekerjaan dan lebih efisien.
 
 ## Hubungan dengan aplikasi hasil ekstraksi
 
