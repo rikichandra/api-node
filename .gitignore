@@ -1,0 +1,7 @@
+node_modules/
+hasil/
+storage/
+.env
+audit.json
+data/
+*.sqlite*

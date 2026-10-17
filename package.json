@@ -1,0 +1,33 @@
+{
+  "name": "gmst-local-replacement",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "scrape": "node cli.js",
+    "test": "node --test",
+    "start": "node --env-file-if-exists=.env api/server.js",
+    "contract": "node api/write-contract.js",
+    "test:api": "node --test test/api.test.js",
+    "backup": "node --env-file-if-exists=.env api/backup.js"
+  },
+  "dependencies": {
+    "@fastify/rate-limit": "10.3.0",
+    "better-sqlite3": "12.11.1",
+    "fastify": "5.12.7",
+    "playwright": "1.64.1",
+    "proper-lockfile": "4.1.2"
+  },
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "devDependencies": {
+    "exceljs": "^4.4.0",
+    "yaml": "2.9.1"
+  },
+  "overrides": {
+    "exceljs": {
+      "uuid": "11.1.1"
+    }
+  }
+}

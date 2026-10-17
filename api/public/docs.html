@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="light">
+  <title>Customer Maps API — Dokumentasi</title><link rel="icon" href="/docs/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/docs/docs.css"><script src="/docs/docs.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="#overview"><span class="brand-mark">M</span><span>Customer Maps<small>API DOCUMENTATION</small></span></a>
+    <span class="version">v1.0 <span>HTTP API</span></span>
+    <nav aria-label="Navigasi dokumentasi">
+      <span class="nav-label">MULAI DI SINI</span><a href="#overview">Ringkasan</a><a href="#quickstart">Panduan cepat</a><a href="#auth">Autentikasi</a>
+      <span class="nav-label">REFERENSI</span><a href="#endpoints">Endpoint</a><a href="#examples">Contoh integrasi</a><a href="#results">Membaca hasil</a><a href="#errors">Status & error</a>
+      <span class="nav-label">COBA LANGSUNG</span><a href="#playground">API playground <span class="nav-arrow">↗</span></a>
+    </nav>
+    <div class="sidebar-footer"><span class="status-dot" id="health-dot"></span><span id="health-text" role="status">Memeriksa layanan…</span><a href="/docs/openapi.json" download="customer-maps-openapi.json">Unduh OpenAPI ↗</a></div>
+  </aside>
+  <main>
+    <header class="topbar"><span>DEVELOPER DOCUMENTATION</span><a href="/docs/openapi.json">OpenAPI 3.1 ↗</a></header>
+    <section id="overview" class="hero">
+      <div class="eyebrow"><span class="mini-mark"></span> CUSTOMER LOCATION MATCHING</div>
+      <h1>Dokumentasi API<br><span>Customer Maps.</span></h1>
+      <p class="lead">Kirim daftar nama usaha, pantau pencarian, lalu ambil kandidat alamat dan koordinat dari Google Maps.</p>
+      <div class="hero-actions"><a class="button primary" href="#quickstart">Mulai integrasi <span>→</span></a><a class="button secondary" href="#playground">Coba API</a></div>
+      <div class="base-url"><span>BASE URL</span><code id="base-url">Origin layanan ini</code><button class="copy plain" data-copy="base-url" aria-label="Salin base URL">Salin</button></div>
+      <div class="facts"><div><b>Asinkron</b><span>Terima job ID, ambil hasil kemudian</span></div><div><b>Per client</b><span>Hasil hanya terlihat oleh pemilik API key</span></div><div><b>Hasil parsial</b><span>Baca progres saat proses berlangsung</span></div></div>
+    </section>
+
+    <section id="quickstart">
+      <div class="section-heading"><span class="section-number">01</span><div><h2>Mulai dalam tiga langkah</h2><p>Pekerjaan berjalan di latar belakang. Respons pertama bukan hasil pencarian.</p></div></div>
+      <div class="steps">
+        <article><span class="step-number">1</span><h3>Siapkan API key</h3><p>Tambahkan header <code>X-API-Key</code> pada setiap request ke <code>/v1</code>.</p><a href="#auth">Lihat autentikasi →</a></article>
+        <article><span class="step-number">2</span><h3>Kirim daftar customer</h3><p>Panggil <code>POST /v1/jobs</code> dengan wilayah dan daftar nama usaha. Simpan <code>id</code> dari respons 202.</p></article>
+        <article><span class="step-number">3</span><h3>Periksa dan ambil hasil</h3><p>Cek status job, lalu panggil <code>/results</code>. Gunakan <code>customer.id</code> untuk menggabungkan hasil ke data Anda.</p></article>
+      </div>
+      <div class="notice"><b>Pin adalah kandidat lokasi.</b> Nama dan provinsi yang cocok belum memastikan identitas atau cabang customer. Cocokkan alamat atau telepon sebelum menggunakan koordinat.</div>
+    </section>
+
+    <section id="auth">
+      <div class="section-heading"><span class="section-number">02</span><div><h2>Autentikasi & input</h2><p>API key diberikan oleh administrator layanan. Gunakan HTTPS untuk koneksi dari luar server.</p></div></div>
+      <div class="codebox compact"><div class="codebar"><span>REQUEST HEADERS</span><button class="copy" data-copy="headers-code">Salin</button></div><pre id="headers-code">X-API-Key: YOUR_API_KEY
+Content-Type: application/json
+Idempotency-Key: customer-upload-001</pre></div>
+      <div class="table-scroll"><table><thead><tr><th>Field</th><th>Tipe</th><th>Keterangan</th></tr></thead><tbody>
+        <tr><td><code>region</code><span class="required">wajib</span></td><td>string</td><td>Provinsi/kota tujuan; 2–100 karakter. Contoh: Sumatra Selatan.</td></tr>
+        <tr><td><code>customers</code><span class="required">wajib</span></td><td>array</td><td>1–1.000 customer; total body maksimal 256 KiB. Mulai dengan batch 100.</td></tr>
+        <tr><td><code>customers[].id</code><span class="required">wajib</span></td><td>string</td><td>Kode customer atau nomor baris; 1–100 karakter, unik dalam satu job.</td></tr>
+        <tr><td><code>customers[].name</code><span class="required">wajib</span></td><td>string</td><td>Nama usaha, 2–200 karakter. Nama perseorangan saja belum cukup.</td></tr>
+      </tbody></table></div>
+      <p class="muted">Upload Excel belum tersedia di endpoint. Ubah baris Excel menjadi array JSON. Untuk retry request yang sama, gunakan Idempotency-Key yang sama (8–128 karakter). Body berbeda dengan key yang sama menghasilkan 409; setelah job dihapus atau kedaluwarsa, key bisa dipakai kembali.</p>
+    </section>
+
+    <section id="endpoints">
+      <div class="section-heading"><span class="section-number">03</span><div><h2>Referensi endpoint</h2><p>Endpoint bisnis memerlukan X-API-Key. Health check dan dokumentasi dapat diakses tanpa key.</p></div></div>
+      <div id="endpoint-list" class="endpoint-list" aria-live="polite"><p>Memuat kontrak endpoint…</p></div>
+      <p class="muted">Daftar dan hasil memakai <code>offset=0</code> dan <code>limit=100</code> secara default. Maksimal limit 200. Hasil diurutkan berdasarkan index input.</p>
+    </section>
+
+    <section id="examples">
+      <div class="section-heading"><span class="section-number">04</span><div><h2>Contoh integrasi</h2><p>Contoh berikut mengirim pekerjaan baru. Ganti YOUR_API_KEY dengan key Anda.</p></div></div>
+      <div class="tabs" role="tablist" aria-label="Bahasa contoh"><button id="tab-curl" class="active" role="tab" aria-selected="true" aria-controls="example-panel" data-language="curl">cURL</button><button id="tab-javascript" role="tab" aria-selected="false" aria-controls="example-panel" data-language="javascript">JavaScript</button><button id="tab-powershell" role="tab" aria-selected="false" aria-controls="example-panel" data-language="powershell">PowerShell</button></div>
+      <div class="codebox" id="example-panel" role="tabpanel" aria-labelledby="tab-curl"><div class="codebar"><span id="code-language">CURL</span><button class="copy" data-copy="request-code">Salin contoh</button></div><pre id="request-code"></pre></div>
+      <details class="response-example"><summary>Contoh respons 202 Accepted</summary><pre>{
+  "id": "12345678-1234-4123-8123-123456789abc",
+  "status": "queued",
+  "region": "Sumatra Selatan",
+  "total": 2,
+  "processed": 0,
+  "errors": 0,
+  "createdAt": "2026-10-16T14:00:00.000Z",
+  "updatedAt": "2026-10-16T14:00:00.000Z",
+  "errorCode": null
+}</pre></details>
+    </section>
+
+    <section id="results">
+      <div class="section-heading"><span class="section-number">05</span><div><h2>Membaca hasil pencocokan</h2><p>Respons <code>/results</code> memisahkan identitas input dari kandidat lokasi.</p></div></div>
+      <div class="table-scroll"><table><thead><tr><th>Field hasil</th><th>Makna</th></tr></thead><tbody>
+        <tr><td><code>customer.id / name</code></td><td>Identitas dan nama dari input Anda. Nama berulang tetap menjadi baris terpisah.</td></tr>
+        <tr><td><code>match.status / reason</code></td><td>Kesimpulan pencocokan dan alasan pemeriksaan.</td></tr>
+        <tr><td><code>match.best</code></td><td>Kandidat yang dipilih untuk ditinjau. Bernilai null jika tidak ada kandidat sesuai.</td></tr>
+        <tr><td><code>match.candidates</code></td><td>Maksimal tiga alternatif yang detailnya berhasil dibaca.</td></tr>
+        <tr><td><code>best.lat / lng / mapsUrl</code></td><td>Koordinat dan tautan kandidat. Data yang tidak tersedia tetap null/kosong.</td></tr>
+        <tr><td><code>errorCode</code></td><td>Kegagalan pada baris tersebut, misalnya UPSTREAM_TIMEOUT.</td></tr>
+      </tbody></table></div>
+      <div class="notice subtle"><b>Perhatikan total:</b> <code>job.total</code> adalah jumlah input, <code>job.processed</code> adalah jumlah baris selesai dievaluasi, dan <code>results.total</code> adalah jumlah hasil yang sudah tersimpan. Angka ini bukan jumlah customer yang terkonfirmasi cocok.</div>
+    </section>
+
+    <section id="errors">
+      <div class="section-heading"><span class="section-number">06</span><div><h2>Status pekerjaan & error</h2><p>Hasil yang sudah tersimpan tetap tersedia saat job parsial, dibatalkan, atau diblokir.</p></div></div>
+      <div class="table-scroll"><table><thead><tr><th>Status</th><th>Arti & langkah berikutnya</th></tr></thead><tbody>
+        <tr><td><code>queued / running</code></td><td>Menunggu atau berjalan. Periksa status secara berkala; tidak perlu mengirim ulang job.</td></tr>
+        <tr><td><code>succeeded</code></td><td>Seluruh baris sudah dievaluasi, termasuk baris tanpa kandidat.</td></tr>
+        <tr><td><code>partial</code></td><td>Selesai dengan sebagian pencarian gagal. Periksa errorCode per baris.</td></tr>
+        <tr><td><code>blocked</code></td><td>Google meminta verifikasi/persetujuan. Antrean dijeda sementara; CAPTCHA tidak dilewati.</td></tr>
+        <tr><td><code>failed / cancelled</code></td><td>Gagal karena browser/deadline, atau dibatalkan pengguna. Ambil hasil parsial jika tersedia.</td></tr>
+      </tbody></table></div>
+      <div class="error-grid"><div><b>400 / 413</b><p>Perbaiki format, field, ID duplikat, atau ukuran body.</p></div><div><b>401 / 404</b><p>Periksa API key dan job ID. Job client lain juga menghasilkan 404.</p></div><div><b>409 / 429</b><p>Konflik idempotensi/job aktif, atau batas request/antrean/penyimpanan.</p></div><div><b>500 / 503</b><p>Gangguan internal atau layanan belum siap. Periksa health dan coba setelah pulih.</p></div></div>
+      <p class="muted">Default layanan: retensi 7 hari, timeout job 30 menit, cooldown 5 menit, dan batas 120 request/menit per alamat koneksi. Nilai dapat diubah oleh administrator.</p>
+    </section>
+
+    <section id="playground">
+      <div class="section-heading"><span class="section-number">07</span><div><h2>Coba API langsung</h2><p>Request dikirim ke origin halaman ini. Tombol kirim akan membuat pekerjaan pencarian nyata.</p></div></div>
+      <div class="playground">
+        <div class="playground-input">
+          <label for="api-key">API key <span>Hanya di memori halaman; tidak disimpan di browser.</span></label>
+          <div class="key-row"><input id="api-key" type="password" autocomplete="off" spellcheck="false" placeholder="Masukkan API key Anda"><button id="clear-key" class="button small secondary" type="button">Hapus key</button></div>
+          <label for="request-body">Body JSON <span>POST /v1/jobs</span></label>
+          <textarea id="request-body" rows="12" spellcheck="false" aria-describedby="json-help">{
+  "region": "Sumatra Selatan",
+  "customers": [
+    { "id": "C001", "name": "PT Bupala Alam Perkasa" },
+    { "id": "C002", "name": "PT Cakra Indo Pratama" }
+  ]
+}</textarea>
+          <p class="field-help" id="json-help">Gunakan nama usaha dan ID customer Anda sendiri.</p>
+          <label for="idem-key">Idempotency-Key <span>Opsional; gunakan key baru untuk pekerjaan baru.</span></label>
+          <input id="idem-key" type="text" autocomplete="off" placeholder="contoh: percobaan-customer-001" maxlength="128">
+          <button id="submit-job" type="button" class="button primary">Kirim pekerjaan <span>→</span></button>
+          <div class="job-controls"><label for="job-id">Job ID</label><input id="job-id" type="text" placeholder="Terisi setelah pekerjaan dibuat" autocomplete="off"><div class="control-buttons"><button id="get-status" type="button" class="button secondary small">Periksa status</button><button id="get-results" type="button" class="button secondary small">Ambil 100 hasil</button></div></div>
+        </div>
+        <div class="playground-output"><div class="codebar"><span>RESPONSE</span><span id="http-status" role="status">Belum ada request</span></div><pre id="api-response" tabindex="0">Respons API akan tampil di sini.
+
+1. Masukkan API key.
+2. Sesuaikan daftar customer.
+3. Klik Kirim pekerjaan.
+4. Periksa status atau ambil hasil.</pre></div>
+      </div>
+      <p class="field-help">Tidak ada polling otomatis. Untuk hasil lebih dari 100 baris, gunakan offset dan limit melalui kode integrasi. Dokumentasi tersedia tanpa key, tetapi playground dan seluruh endpoint /v1 tetap membutuhkan autentikasi.</p>
+    </section>
+    <footer><span>Customer Maps API v1</span><a href="#overview">Kembali ke atas ↑</a></footer>
+  </main>
+  <div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
